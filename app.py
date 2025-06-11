@@ -129,4 +129,4 @@ if __name__ == '__main__':
     print("  1. Run: ngrok http 5000")
     print("  2. Use the public URL shown by ngrok as the join link.")
     print("  3. The QR code will use ngrok if detected, else LAN IP.")
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
