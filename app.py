@@ -62,7 +62,7 @@ def create():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             s.connect(('8.8.8.8', 80))
-            local_ip = s.getsockname()[0]
+            local_ip = 'guessmastermultiplayer.onrender.com'
         except Exception:
             local_ip = 'guessmastermultiplayer.onrender.com'
         finally:
