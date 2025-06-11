@@ -2,3 +2,6 @@ ttkbootstrap
 Pillow
 requests
 qrcode
+flask
+flask-socketio
+flask-cors
