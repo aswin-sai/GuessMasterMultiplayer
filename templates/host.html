@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Host Game - GuessMaster</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: linear-gradient(135deg, #232336 0%, #18181b 100%);
+            color: #fff;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .host-box {
+            background: #232336;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 #38bdf855, 0 2px 8px 0 #f472b655;
+            padding: 2.5em 2em 2em 2em;
+            margin: 2em auto;
+            min-width: 320px;
+            max-width: 420px;
+            width: 92vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .host-box h2 {
+            color: #fbbf24;
+            font-size: 1.7em;
+            margin-bottom: 0.7em;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 8px #fbbf2444;
+        }
+        .qr-img {
+            margin: 1.2em 0;
+            background: #fff;
+            border-radius: 16px;
+            padding: 0.7em;
+        }
+        .join-link {
+            color: #38bdf8;
+            font-size: 1.1em;
+            margin-top: 1em;
+            word-break: break-all;
+            text-align: center;
+        }
+        .player-list {
+            margin-top: 1.5em;
+            color: #f472b6;
+            font-weight: 700;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1em;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            margin-top: 1em;
+            cursor: pointer;
+        }
+        @media (max-width: 480px) {
+            .host-box {
+                padding: 1.5em 1em;
+            }
+            .host-box h2 {
+                font-size: 1.5em;
+            }
+            .join-link {
+                font-size: 1em;
+            }
+            .btn {
+                font-size: 1em;
+                padding: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="host-box">
+        <h2>Room Code: {{ room }}</h2>
+        <div class="qr-img">
+            <img src="data:image/png;base64,{{ qr_data }}" alt="QR Code" width="180" height="180">
+        </div>
+        <div class="join-link">Or join at: <br><b>{{ join_url }}</b></div>
+        {% if public_ip %}
+        <div class="join-link" style="margin-top:1em;">
+            <span style="color:#fbbf24;">For remote users (outside your WiFi):</span><br>
+            <b>http://{{ public_ip }}:5000/join/{{ room }}</b>
+            <br>
+            <span style="font-size:0.95em;color:#f472b6;">(Requires port 5000 to be forwarded on your router)</span>
+        </div>
+        {% endif %}
+        <div class="player-list" id="player-list">Waiting for players...</div>
+        <div id="game-log"></div>
+        <a href="{{ url_for('index') }}"><button class="btn">Back to Home</button></a>
+    </div>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const room = "{{ room }}";
+        let players = [];
+
+        socket.on('connect', function() {
+            // Host does not join as a player
+        });
+
+        socket.on('player_joined', function(data) {
+            players = data.players;
+            document.getElementById('player-list').innerHTML = "Players: " + players.join(", ");
+        });
+
+        socket.on('player_left', function(data) {
+            players = data.players;
+            document.getElementById('player-list').innerHTML = "Players: " + players.join(", ");
+        });
+
+        socket.on('guess_result', function(data) {
+            const log = document.getElementById('game-log');
+            let entry = document.createElement('div');
+            if (data.result === 'correct') {
+                entry.innerHTML = `<b style="color:#38bdf8">${data.username}</b> guessed <b>${data.guess}</b> - <span style="color:#38bdf8">Correct!</span>`;
+            } else {
+                entry.innerHTML = `<b style="color:#fbbf24">${data.username}</b> guessed <b>${data.guess}</b> - <span style="color:#fbbf24">${data.clue}</span>`;
+            }
+            log.appendChild(entry);
+        });
+
+        socket.on('game_over', function(data) {
+            const log = document.getElementById('game-log');
+            let entry = document.createElement('div');
+            entry.innerHTML = `<b style="color:#34d399">Game Over! Winner: ${data.winner}. Number was: ${data.number}</b>`;
+            log.appendChild(entry);
+        });
+    </script>
+</body>
+</html>

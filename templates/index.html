@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuessMaster QR Multiplayer</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #232336 0%, #18181b 100%);
+            --box-bg: #232336;
+            --text-color: #fff;
+            --button-bg: linear-gradient(90deg, #38bdf8 0%, #f472b6 100%);
+            --button-text: #232336;
+            --shadow1: #38bdf855;
+            --shadow2: #f472b655;
+        }
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+        }
+        .main-box {
+            background: var(--box-bg);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 var(--shadow1), 0 2px 8px 0 var(--shadow2);
+            padding: 2.5em 2em 2em 2em;
+            margin: 2em auto;
+            min-width: 320px;
+            max-width: 420px;
+            width: 92vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        .main-box h1 {
+            color: #38bdf8;
+            font-size: 2.1em;
+            margin-bottom: 0.7em;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 8px var(--shadow1);
+        }
+        .main-box button {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 16px;
+            padding: 0.8em 2.2em;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 1.5em;
+            box-shadow: 0 2px 8px #38bdf822, 0 0 8px var(--shadow2);
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s, color 0.3s;
+        }
+        .main-box button:active {
+            transform: scale(0.97);
+        }
+        .toggle-mode-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+        @media (max-width: 480px) {
+            .main-box {
+                padding: 1.5em 1em;
+            }
+            .main-box h1 {
+                font-size: 1.5em;
+            }
+            .main-box button {
+                padding: 0.7em 1.5em;
+                font-size: 1rem;
+            }
+            .toggle-mode-btn {
+                top: 8px;
+                right: 8px;
+                font-size: 1.2em;
+            }
+        }
+        /* Light mode overrides */
+        body.light-mode {
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
+            --box-bg: #fff;
+            --text-color: #232336;
+            --button-bg: linear-gradient(90deg, #38bdf8 0%, #f472b6 100%);
+            --button-text: #232336;
+            --shadow1: #38bdf822;
+            --shadow2: #f472b622;
+        }
+        body.light-mode .main-box h1 {
+            color: #38bdf8;
+            text-shadow: 0 2px 8px var(--shadow1);
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-mode-btn" id="toggleModeBtn" title="Toggle dark/light mode">🌙</button>
+    <div class="main-box">
+        <h1>GuessMaster QR Multiplayer</h1>
+        <p>Start a new game and let friends join by scanning a QR code!</p>
+        <a href="/create"><button>Start New Game</button></a>
+    </div>
+    <script>
+        // Toggle dark/light mode and persist in localStorage
+        const btn = document.getElementById('toggleModeBtn');
+        function setMode(mode) {
+            if (mode === 'light') {
+                document.body.classList.add('light-mode');
+                btn.textContent = '🌚';
+            } else {
+                document.body.classList.remove('light-mode');
+                btn.textContent = '🌙';
+            }
+            localStorage.setItem('colorMode', mode);
+        }
+        btn.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-mode');
+            setMode(isLight ? 'light' : 'dark');
+        });
+        // On load, set mode from localStorage
+        (function() {
+            const saved = localStorage.getItem('colorMode');
+            if (saved === 'light') setMode('light');
+            else setMode('dark');
+        })();
+    </script>
+</body>
+</html>
