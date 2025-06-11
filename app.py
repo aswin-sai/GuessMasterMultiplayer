@@ -45,7 +45,7 @@ def create():
     try:
         import requests
         # Try to get the public URL from ngrok's local API (if running)
-        ngrok_api = "http://0.0.0.0:4040/api/tunnels"
+        ngrok_api = "https://guessmastermultiplayer.onrender.com:4040/api/tunnels"
         tunnels = requests.get(ngrok_api).json()["tunnels"]
         for t in tunnels:
             if t.get("public_url", "").startswith("https"):
@@ -64,10 +64,10 @@ def create():
             s.connect(('8.8.8.8', 80))
             local_ip = s.getsockname()[0]
         except Exception:
-            local_ip = '0.0.0.0'
+            local_ip = 'guessmastermultiplayer.onrender.com'
         finally:
             s.close()
-        join_url = f'http://{local_ip}:5000/join/{room}'
+        join_url = f'https://{local_ip}/join/{room}'
     qr_data = generate_qr_code(join_url)
     return render_template('host.html', room=room, qr_data=qr_data, join_url=join_url, public_ip=public_url)
 
@@ -129,4 +129,4 @@ if __name__ == '__main__':
     print("  1. Run: ngrok http 5000")
     print("  2. Use the public URL shown by ngrok as the join link.")
     print("  3. The QR code will use ngrok if detected, else LAN IP.")
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=80, allow_unsafe_werkzeug=True)

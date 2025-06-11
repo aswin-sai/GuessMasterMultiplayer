@@ -8,7 +8,7 @@ import io
 
 def fetch_ngrok_url():
     try:
-        resp = requests.get("http://0.0.0.0:4040/api/tunnels", timeout=2)
+        resp = requests.get("https://guessmastermultiplayer.onrender.com:4040/api/tunnels", timeout=2)
         tunnels = resp.json().get("tunnels", [])
         for t in tunnels:
             if t.get("public_url", "").startswith("http"):
